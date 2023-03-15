@@ -30,6 +30,10 @@ function getBalance(statement) {
     }, 0);
 }
 
+app.get('/account', (request, response) => {
+    return response.json(customers);
+});
+
 app.post('/account', (request, response) => {
     const { cpf, name } = request.body;
 
@@ -49,13 +53,21 @@ app.post('/account', (request, response) => {
     return response.status(201).send();
 });
 
+app.put('/account/:cpf', verifyIfExistsAccountCPF, (request, response) => {
+    const { name } = request.body;
+    const { customer } = request;
+
+    customer.name = name;
+
+    return response.status(201).send();
+});
+
 app.get('/:cpf/statement', verifyIfExistsAccountCPF, (request, response) => {
     const { customer } = request;
 
     return response.json(customer.statement);
 });
 
-// Fazendo bagulho com data
 app.get('/:cpf/statement/date', verifyIfExistsAccountCPF, (request, response) => {
     const { customer } = request;
     const { date } = request.query;
