@@ -55,6 +55,21 @@ app.get('/:cpf/statement', verifyIfExistsAccountCPF, (request, response) => {
     return response.json(customer.statement);
 });
 
+// Fazendo bagulho com data
+app.get('/:cpf/statement/date', verifyIfExistsAccountCPF, (request, response) => {
+    const { customer } = request;
+    const { date } = request.query;
+
+    const dateFormat = new Date(date + ' 00:00');
+
+    const statement = customer.statement.filter(
+        (operation) =>
+            operation.created_at.toDateString() === new Date(dateFormat).toDateString()
+    );
+
+    return response.json(statement);
+});
+
 app.post('/:cpf/deposit', verifyIfExistsAccountCPF, (request, response) => {
     const { description, amount } = request.body;
 
